@@ -1,4 +1,111 @@
 # 윤병현 23 - React
+## 4주차 정리 (23.3.23)
+
+### jsx 정의
+
+jsx는 자바스트립트 확장 문법이며  javascript와 xml/html을 합친 것입니다. 
+
+```jsx
+// jsx 사용 예시
+const element = <h1>hello world</h1>
+```
+***
+### jsx를 사용하는 이유
+
+```jsx
+//순수 자바스크립트 코드
+class Hello extents React.Component{
+render(){
+	return React.createElement('div',null,`hello${this.props.toWhat}`);
+	}
+}
+
+ReactDOM.render(
+	React.createElement(hello, {toWhat: 'wolrd' }, null),
+	document.getElementById('root)
+);
+```
+
+```jsx
+//
+const element =(
+	<h1 className="greeting">
+			hello, world!
+	</h1>
+)
+
+const element = React.createElement(
+	'h1',
+	{className: 'greeting' },
+	'hello, world
+)
+```
+
+위 두개 코드는 JSX를 사용한 코드와 사용하지 않은 코드이며, 모두 동일한 역할을 합니다. JSX를 사용한 코드도 내부적으로 createElement() 함수를 사용하도록 변환되기 때문입니다.
+
+결과는 아래와 같이 객체가 나옵니다
+
+```jsx
+const element ={
+	type: 'h1',
+	props: {
+		className: 'greeting',
+		children: 'hello, world1'
+	}
+}
+```
+
+리엑트는 이런식으로 JSX 코드를 모두 createElment() 함수를 사용하는 코드로 변환합니다 그렇기 때문에 리엑트에서 JSX를 사용하는 것은 필수는 아닙니다. 왜냐하면 createElment() 함수를 사용해서 개발하면 되기 때문이다
+
+다만 JSX를 사용했을 때 코드가 더욱 간결해지고 생산성과 가독성이 올라가기 때문에 사용하는 것을 권장한다.
+***
+### jsx 장점
+
+코드가 간결해 집니다
+
+가독성이 향상 됩니다
+
+injection Attack이라 불리는 해킹 방법을 방어함으로써 보안에 강합니다.
+***
+### jsx 사용방법
+
+모든 자바스크립트 문법을 지원합니다
+
+자바스트립트 문법에 xml, html을 섞어서 사용한다
+
+```jsx
+const name = '소플';
+const element = <h1>안녕, {name}</h1>;
+
+ReactDOM.render(
+	element,
+	document.getElementById('root')
+);
+```
+
+만일 html이나 xml에 자바스크립트 코드를 사용하고 싶으면 {}괄호를 사용합니다
+
+```jsx
+fuction formatName(user){
+	return user.firstName + ' ' + user.lastName; 
+
+const user ={
+	firstName: 'Inge',
+	lastName: 'Lee'
+};
+
+const element = (
+	<h1>
+		hello,{formatUser(user)}
+	</h1>
+);
+
+ReactDOM.render(
+	element,
+	document.getElementById('root')
+);
+```
+***
 ## 3주차 정리 (23.3.16)
 
 ### 윈도우 패키지 관리자
