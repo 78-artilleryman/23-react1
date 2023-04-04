@@ -1,4 +1,169 @@
 # 윤병현 23 - React
+## 5주차 정리 (23.3.30)  
+### 엘리먼트 정의
+
+Element라는영단어는요소, 성분이라는뜻을갖고있습니다. 어떤물체를구성하는 영어로엘리먼트라고부릅니다. 마찬가지로리액트의엘리먼트는리액트앱을구성하는 를의미합니다.
+
+Elements are the smallest  building blocks of React apps.
+
+위의문장을번역하면엘리먼트는리액트앱의가장작은빌딩블록들이라는 의미가 됩니다.
+***
+### 엘리먼트 생김새
+
+```jsx
+const element = <h1>hello</h1>;
+```
+
+ 코드가 실행될 때 , 대입연산자의 오른쪽 부분은 리스 createElement()함수를 사용하여 엘리먼트를 생성하게됩니다. 결국 이렇게 생성된 것이 바로 리액트 엘리먼트가 되는 것입니다. 
+
+```jsx
+function Button(props) { 
+	return (
+		<button className={' bg-${props.color} '}> 
+			<b>
+				{props.children} 
+			</b>
+		</button> 
+	)
+}
+
+function ConfirmDialog (props) { return (
+‹div>
+	<p>내용을확인하셨으면확인버튼을눌러주세요. </p>
+	<Button color='green'>확인</Button> 
+</div>
+)
+}
+```
+
+코드에는Button 컴포넌트와ConfirmDialog 컴포넌트가있으며, ConfirmDialc 컴포넌트가 Button 컴포넌트를포함하고 있습니다. 여기에서 ConfirmDialog 컴포넌트의 엘리먼트는 어떤모습이될까요? 아마도 아래와 같은 형태가될 것입니다.
+
+```jsx
+{
+	type: 'div', 
+	porops:{
+	children:[
+		{
+			type : 'p':
+			props: {
+				children : '내용을 확인했으면 확인을 눌러주세요'
+			}
+		},
+		{
+			type : 'Buttton'
+			props :{
+					color : 'green'
+					children : '확인'
+				}
+			}
+		]
+	}
+}
+```
+
+첫번째 children은 type이 HTML 태그인 p태그이기 때문에 곧바로 렌더링이 될 수 있는 상태입니다. 하지만두번째 children의 type은 HTML 태그가 아니라 리액트 컴포넌트 Button 입 니 다 . 이경우에 리액트는 But ton 컴포넌트의 엘리먼트를 생성해서 합치게 됩니다.
+최종적으로는 아래와 같은 형태가 됩니다.
+
+```jsx
+{
+	type: 'div', 
+	porops:{
+	children:[
+		{
+			type: 'p':
+			props: {
+				children: '내용을 확인했으면 확인을 눌러주세요'
+			}
+		},
+		{
+			type: 'buttton'
+			props:{
+					className: 'bg-green',
+					children:{
+							type: 'b',
+							props: {
+								children: '확인'
+						}
+					}
+				}
+			}
+		]
+	}
+}
+```
+***
+### 엘리먼트 특징
+
+엘리먼트는 불변성(immutable)이라는  변하지 않는 성질을 가지고 있습니다
+
+- 엘리먼트 생성 후에는 children이나 attributes를 바꿀 수 없다.
+
+엘리먼트는 다양한 모습으로 존재할 수 있지만 한 번 생성된 다음에느 변경이 불가능합니다.
+
+그래서 화면에 변경된 엘리먼트들을 보여주기 위해서는 새로운 엘리먼트를 만들어 기존 엘리먼트와 바꿔치기하는 방법이 있다.
+***
+### 엘리먼트 렌더링
+
+리액트 엘리먼트를 렌더링하기 위해서는 아래와 같은 코드를 사용합니다.
+
+```jsx
+const element = <h1>안녕, 리액트</h1>;
+ReacDOM.render(element, document.getElementById('root'));
+```
+*** 
+### 컴포넌트
+
+컴포넌트 구조라는 것은 작은 컴포넌트가 모여 큰 컴포넌트를 구성하고 다시 이런 컴포넌트들이 모여서 전체 페이지를 구성한다는 것을 의미합니다
+
+컴포넌트 재사용이 가능하기 때문에 전체 코드의 양을 줄일 수 있어 개발 시간과 유지 보수 비용도 줄일 수 있다
+
+컴포넌트는 자바스크립트 함수와 입력과 출력이 있다는 면에서는 유사합니다
+
+다만 입력과 출력은 입력은 props가 담당하고, 출력은 리액트 엘리먼트의 형태로 출력됩니다.
+***
+#### props의 개념
+
+props는 (property: 속성, 특성)의 준말입니다
+
+컴포넌트에 어떤 속성, props를 넣느냐에 따라서 속성이 다른 엘리먼트가 출력됩니다.
+
+props는 컴포넌트에 전달 할 다양한 정보를 담고 있는 자바스크립트 객체입니다.
+***
+### props의 특징
+
+읽기 전용입니다 변경할 수 없다는 의미 입니다.
+
+속성이 다른 엘리먼트를 생성하려면 새로운 props를 컴포넌트에 전달하면 됩니다.
+
+pure함수는 인자로 받는 정보가 함수 내부에서도 변하지 않는 함수입니다
+
+impure함수는 인자로 받는 정보가 함수 내부에서 변하는 함수입니다.
+***
+### 컴포넌트 종류
+
+리액트 초기버전을 사용할 때는 클래스형 컴포넌트를 주로 사용했습니다
+이후 Hook이라는 개념이 나오면서 최근에는 함수형 컴포넌트르 주로 사용합니다
+예전에 작성된 코드나 문서들이 클래스형 컴포넌트를 사용하고 있기 때문이다  
+### 함수형 컴포넌트
+
+```jsx
+function Welcome(props){
+	return <h1>안녕, {props.name}</h1>
+}
+```
+
+### 클래스형 컴포넌트
+
+```jsx
+class Welcome extends React.Component{
+	render(){
+		return <h1>안녕, {this.props.name}</h1>;
+	}
+}
+```
+***
+### 컴포넌트 이름
+컴포넌트의 이름은 항상 대문자로 시작해야된다.
 ## 4주차 정리 (23.3.23)
 
 ### jsx 정의
