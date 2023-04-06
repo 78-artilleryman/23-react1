@@ -1,4 +1,67 @@
 # 윤병현 23 - React
+## 6주차 정리 (23.4.6)
+### 컴포넌트 추출
+
+- 큰 컴포넌트에서 일부를 추출해서 새로운 컴포너느를 만드는 것
+- 기능 단위로 구분하는 것이 좋고, 나중에 곧바로 재사용이 가능한 형태로 추출하는 것이 좋음
+***
+### state
+
+- state는 리엑트 컴포넌트의 상태를 의미합니다
+- 상태의 의미는 정상인지 비정상인지가 아니라 컴포넌트의 데이터를 의미합니다
+- 정확히는 컴포넌트의 변경 가능한 데이터를 의미합니다
+- state가 변하면 다시 렌더링이 되기 때문에 렌더링과 관련된 값만 state에 포함시켜야 합니다.
+***
+### state 특징
+
+- 리엑트 만의 특별한 형태가 아닌 단지 자바스크립트 객체일 뿐 입니다.
+
+```jsx
+class LikeButton extends React.Component{
+	constructor(props){
+		super(props);
+		
+		this.state = {
+			liked: false
+		};
+	}
+
+...
+}
+```
+
+이 생성자 코드를  보면 this.state라는 부분이 나오는데 이 부분이 바로 현재 컴포넌트의 state를 정의하는 부분입니다.
+
+클래스 컴포넌트의 경우 state를 생성자에서 정의합니다. 함수 컴포넌트는 state를 uesState()라는 훅을 사용해서 정의하게 됩니다.
+
+```jsx
+// state를 직접 수정 (잘못된 사용법)
+this.state = {
+	name: 'Inje'
+};
+
+// setState 함수를 통한 수정 (정상적인 사용법)
+this.setState({
+	name: 'Inge'
+});
+```
+
+리액트에서의 state는 컴포넌트의 랜더링과 관련 있기 때문에 마음대로 수정하게 되면 개발자가 의도한 대로 작동하지 않을 가능성이 있습니다. 그래서 state를 변경하고자 할 때에는 꼭 setState()라는 함수를 사용해야 합니다.
+***
+### component VS element VS intance
+
+element는 재료에 해당하고, component를 빵 틀, intance는 재료를 방 틀에 넣고 만든 빵으로 비유를 하셨는데 element라는 재료가 달라지면 여러가지에 intance 빵이 나올 수 있다는 말이다
+***
+### 생명주기
+
+- 생명주기는 컴포넌트의 생성 시점, 사용 시점, 종료 시점을 나타내는 것입니다.
+- constructor가 실행 되면서 컴포넌트가 생성됩니다.
+- 생성 직후 conponentDidMount()함수가 호출됩니다.
+- 컴포넌트가 소멸하기 전까지 여러 번 렌더링 합니다.
+- 렌더링은 props, setState(), foreUpdate()에 의해 상태가 변경되면 이루어집니다.
+- 그리고 렌더링이 끝나면 conponentDinUpdate() 함수가 호출됩니다.
+- 마지막으로 컴포넌트가 언마운트 되면 conponentWillUnmount() 함수가 호출됩니다.
+***
 ## 5주차 정리 (23.3.30)  
 ### 엘리먼트 정의
 

@@ -1,19 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
-import Clock from './chapter_04/Clock';
+import App from './App'
+import NotificationList from './chapter_06/NotificationList';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-
-setInterval(() => {
-  root.render(
-    <React.StrictMode>
-    <Clock/>
-    </React.StrictMode>
-  );
-}, 1000);
+root.render(
+  <React.StrictMode>
+    <NotificationList></NotificationList>
+  </React.StrictMode>
+)
 
 
 
