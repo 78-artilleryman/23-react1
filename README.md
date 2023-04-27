@@ -1,4 +1,129 @@
 # 윤병현 23 - React
+## 9주차 정리(23.04.27)
+### 이벤트 처리하기
+
+- DOM에서 클릭 이벤트를 처리하는 예제 코드
+
+```jsx
+<button onclick="activate()">
+	Actvate
+</button>
+```
+
+- React에서 클릭 이벤트 처리하는 예제 코드
+
+```jsx
+<button onClick={activate}>
+	Actvate
+</button>
+```
+
+- 차이점
+  1. 이벤트 이름이 onclick에서 onClick으로 변경(Camel case)
+  2. 전달하려는 함수는 문자열에서 함수 그래도 전달
+- 이벤트가 발생했을 때 해당 이벤트를 처리하는 함수를 “이벤트 핸들러 (Event Handler)” 라고 합니다. 또는 이벤트가 발생하는 것을 계속 듣고 있다는 의미로 “이벤트 리스너(Event Listener)” 라고 부르기도 합니다.
+***
+### Arguments 전달하기
+
+- 함수를 정의할 때는 파라미터(Parameter) 혹은 매개변수, 함수를 사용할 때는 아귀먼트(Argument) 혹은 인자라고 부릅니다.
+- 이벤트 핸들러에 매개변수를 전달해야 하는 경우도 많습니다
+
+```jsx
+<button onClick={(event) => this.deleteItem(id, event)}>삭제하기</button>
+
+<button onClick={this.deleteItem.bind(this, id)}>삭제하기</button>
+```
+
+- 위의 코드는 모두 동일한 역학을 하지만 하나는 화살표 함수를, 다른 하나는 bind를 사용했습니다
+- event라는 매개변수는 리액트의 이벤트 객체를 의미합니다
+- 두 방법 모두 첫 번째 매개변수는 id이고 두 번째 매개변수로 event가 전달 됩니다
+- 첫 번째 코드는 명사적으로  event를 매개변수로 넣어 주었고, 두 번째 코드는 id 이후에 두번째 매개변수로 event가 자동 전달 됩니다(이 방법은 클래스형에서 사용하는 방법입니다)
+***
+### 조건부 렌더링이란?
+
+- 여기서 조건이란 우리가 알고 있는 조건문의 조건입니다
+
+```jsx
+function UserGreeting(props){
+	return <h1>다시 오셨군요</h1>
+}
+function GuestGreeting(props){
+	return <h1>회원가입을 해주세요</h1>
+}
+```
+
+```jsx
+function Greeting(props){
+ const isLoggedIn = props.isLoggedIn;
+if(isLoggedIn){
+	return <UserGreeting/>
+}
+	return <GuestGreeting/>
+}
+```
+
+- props로 전달 받은 isLoggedIn이 true면 <UserGreeting/>을 false면 <GuestGreeting/>을 return 합니다
+- 이와 같은 렌더링을 조건부 렌더링 이라고 합니다.
+***
+### 엘리먼트 변수
+
+- 렌더링해야 될 컴포넌트를 변수처럼 사용하는 방법이 엘리먼트 변수입니다.
+- state에 따라 button 변수에 컴포넌트의 객체를 저장하여 return문에서 사용하고 있습니다.
+
+```jsx
+function LoginButton(props) { 
+return (
+
+	<button onClick={props.onClick}>
+		로그인
+	</button>
+
+);
+}
+
+function LogoutButton (props) { 
+return (
+	<button onClick={props.onClick}>
+		로그아웃
+	</button>
+	);
+}
+```
+***
+### 인라인 조건
+
+- 필요한 곳에 조건문을 직접 넣어 사용하는 방법입니다.
+
+1. 인라인 if
+- if문을 직접 사용하지 않고, 동일한 효과를 내기 위해 && 논리 연산자를 사용합니다
+- &&는 and연산자로 모든 조건이 참일때만 참이 됩니다.
+- 첫 번째 조건이 거짓이면 두 번째 조건은 판단할 필요가 없음(단축 평가)
+
+```jsx
+true && expression -> expression
+false && expression -> false
+```
+
+1. 인라인 if-else
+- 삼항 연산자를 사용합니다
+- 문자열이나 엘리먼트를 넣어서 사용할 수도 있습니다
+
+```jsx
+function UserStatus (props) { 
+	return (
+		<div>
+			이사용자는현재<b>{props.islogedin ?' 로그인' : ' 로그인하지은'}</b> 상태입니다. 
+		</div>
+	)
+}
+```
+***
+### 컴포넌트 렌더링 막기
+
+- 리엑트에서는 null을 리턴하면 렌더링이 되지 않음
+- 특정 컴포넌트를 렌더링하고 싶지 않을 때는 null을 리턴하면 된다
+## 8주차
+- 중간고사
 ## 7주차 정리 (23.4.13)
 ### 훅
 
