@@ -1,4 +1,216 @@
 # 윤병현 23 - React
+## 10주차 정리(23.05.04)
+### 리스트와 키란 무엇인가
+
+- 리스트는 자바스크립트의 변수나 객체를 하나의 변수로 묶어 놓은 배열과 같은 것입니다
+- 키는 각 객체나 아이템을 구분할 수 있는 고유한 값을 의미합니다
+- 리액트에서는 배열과 키를 사용하는 반복되는 다수의 엘리먼트를 쉽게 렌더링할 수 있습니다
+---
+### 여러 개의 컴포넌트 렌더링
+
+- 예의 에이버엔비의 화면처럼 같은 컴포넌트를 화면에 반복적으로 나타내야 할 경우 배열에 들어있는 엘리먼트를 map()함수를 이용하여 랜더링 합니다
+- 다음은 numbers 배열에 들어있는 각각의 요소를 map()를 이용하여 하나씩 추출하여, 2를 곱한 후 doubled라는 배열에 다시 넣는 코드다
+
+```jsx
+const doubled = numbers.map((number) => number*2);
+```
+
+- 다음은 리액트에서 map()함수를 사용한 예제입니다.
+
+```jsx
+const numbers = [1,2,3,4,5];
+const listItems = numbers.map((number) =>
+		<li>{number}</li>
+);
+```
+
+```jsx
+리턴된 listItems는 <ul>태그와 결합하여 렌더링 됩니다.
+```
+---
+### 기본적인 리스트 컴포넌트
+
+앞서 작성한 코드를 별도의 컴포넌트로 분리하면 다음과 같습니다
+
+- 이 컴포넌트는 props로 받은 숫자를 numbers로 받아 리스트로 렌더링해 줍니다
+
+```jsx
+function NumberList(props){
+	const{numbers}=props;
+
+	const list = numbers.map((neuber) =>
+		<li>{number}</li>
+);
+
+return(
+	<ul>{listItems}</ul>
+);
+}
+
+const numbers = [1,2,3,4,5];
+ReactDOM.render(
+	<NumberList numbers={numbers}/>
+	document.getElementById('root')
+);
+```
+
+- 이 코드를 실행하면 “리스트 아이템에 무조건 키가 있어야 한다”는 경고 문구가 나옵니다-
+- 경고 문구가 나오는 이유는 각각의 아이템에 key props가 있어야 한다
+---
+### 리스트의 키에 대해 알아보기
+
+- 리스트에서의 키는 “리스트에서 아이템을 구별하기 위한 고유한 문자열”입니다.
+- 이 키는 리스트에서 어떤 아이템에 변경, 추가 또는 제거되었는지 구분하기 위해 사용합니다
+- 키는 같은 리스트에 있는 엘리먼트 사이에서만 고유한 값이면 됩니다.
+---
+### 폼이란 무엇인가
+
+- 폼은 일반적으로 사용자로부터 입력을 받기위한 양식에서 많이 사용됩니다.
+
+```jsx
+<form>
+	<label>
+			이름:
+			<input type="text" name="name" />
+	</label>
+	<button type="submit">제출</button>
+</form>
+```
+---
+### 제어 컴포넌트
+
+- 제어 컴포넌트는 사용자가 입력한 값에 접근하고 제어할 수 있도록 해주는 컴포넌트입니다.
+
+```jsx
+function NameForm(props){
+	const[value, setValue] = useState('');
+	
+	const handleChange = (event) =>{
+		setValue(event.target.value);
+	}
+
+	const handleSubmit = (event) => {
+		alert('입력한 이름: ' + value);
+		event.preventDefault();
+	}
+
+	return(
+		<form onSubmit={handleSunmit}>
+			<label>
+			 이름:
+				<input type="text" value={value} onChage={handleChange}/>
+			</label>
+				<button type="submit">제출</button>
+		</form>
+	)
+}
+```
+---
+### textarea 태그
+
+- HTML에서는 textarea의 children으로 텍스트가 들어가는 형태입니다
+
+```jsx
+<textarea>
+ hello world
+</textarea>
+```
+
+- 리액트에서는 state를 통해 태그의 value라는 attribute를 변경하여 텍스트를 표시합니다.
+
+```jsx
+function NameForm(props){
+	const[value, setValue] = useState('요청사항을 입력하세요');
+	
+	const handleChange = (event) =>{
+		setValue(event.target.value);
+	}
+
+	const handleSubmit = (event) => {
+		alert('입력한 요청사항: ' + value);
+		event.preventDefault();
+	}
+
+	return(
+		<form onSubmit={handleSunmit}>
+			<label>
+				요청사항:
+				<textarea value={value} onChage={handleChange}/>
+			</label>
+				<button type="submit">제출</button>
+		</form>
+	)
+}
+```
+---
+### select 태그
+
+- select 태그도 textarea와 동일합니다
+
+```jsx
+<select>
+		<option value="apple">사과</option>
+		<option value="banana">바나나</option>
+		<option selected value="grape">포도</option>
+		<option value="watermelon">수박</option>
+</select>
+```
+
+```jsx
+function FruitSelect(props){
+	const[value, setValue] = useState('grape');
+	
+	const handleChange = (event) =>{
+		setValue(event.target.value);
+	}
+
+	const handleSubmit = (event) => {
+		alert('선택한 과일: ' + value);
+		event.preventDefault();
+	}
+
+	return(
+		<form onSubmit={handleSubmit}>
+			<label>
+				과일을 선택하세요:
+				<select value={value} onChange={handleChange}>
+					<option value="apple">사과</option>
+					<option value="banana">바나나</option>
+					<option selected value="grape">포도</option>
+					<option value="watermelon">수박</option>
+				</select>
+			</label>
+				<button type="submit">제출</button>
+		</form>
+	)
+}
+```
+---
+### File input 태그
+
+- File input 태그는 그 값이 읽기 전용이기 때문에 리액트에서는 비제어 컴포넌트가 됩니다.
+
+```jsx
+<input type="file">
+```
+---
+### input Null Value
+
+- 제어 컴포넌트에 value prop을 정해진 값으로 넣으면 코드를 수정하지 않는 한 입력값을 바꿀 수 없습니다.
+- 만약 value prop은 넣되 자유롭게 입력할 수 있게 만들고 싶다면 값에 undefined 또는 null을 넣어 주면 됩니다
+
+```jsx
+ReactDOM.render(<input value="hi"/>, rootNode);
+
+setTimeout(function(){
+	ReactDOM.render(<input value={null}/>, rootNode);
+}, 1000);
+```
+---
+### Shared state
+
+- 하위 컴포넌트가 공통된 부모 컴포넌트의 state를 공유하여 사용하는 것
+---
 ## 9주차 정리(23.04.27)
 ### 이벤트 처리하기
 
