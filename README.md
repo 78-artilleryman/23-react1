@@ -1,4 +1,174 @@
 # 윤병현 23 - React
+## 11주차 정리 (23.05.11)
+## shared state
+
+- 어떤 컴포넌트의 state에 있는 데이터를 여러 개의 하위 컴포넌트에서 공통적으로 사용하는 경우를 말한다
+
+## 예시
+
+## TemperatureInput 컴포넌트
+
+```jsx
+const scaleNames = {
+  c: "썹씨",
+  f: "화씨",
+}
+
+function TemperatureInput(props){
+  const handleChange = (event) =>{
+    props.onTemperaturechange(event.target.value);
+  };
+
+  return(
+    <fieldset>
+      <legend>
+          온도를 입력해주세요(단위:{scaleNames[props.scale]}):
+      </legend>
+      <input value={props.temperature} onChange={handleChange}/>
+    </fieldset>
+  );
+}
+export default TemperatureInput;
+```
+
+위의 코드는 온도를 입력받기 위한 TemperatureInput 컴포넌트입니다.
+
+```jsx
+ return(
+    <fieldset>
+      <legend>
+          온도를 입력해주세요(단위:{scaleNames[props.scale]}):
+      </legend>
+      <input value={props.temperature} onChange={handleChange}/>
+    </fieldset>
+  );
+```
+
+이렇게 하면 온도 값을 컴포넌트의 state에서 가져오는 것이 아닌 props를 통해서 가져오게 됩니다. 또한 컴포넌트의 state를 사용하지 않게 되기 때문에 입력값이 변경되었을 때 상위 컴포넌트로 변경된 값을 전달해 주어야 합니다 이를 위해서 handleChange() 함수를 아래와 같이 변경합니다.
+
+```jsx
+const handleChange = (event) =>{
+    props.onTemperaturechange(event.target.value);
+  };
+```
+---
+
+## Calculator 컴포넌트
+
+```jsx
+import React, { useState } from "react";
+import TemperatureInput from "./TemperatureInput";
+
+function BoilingVerdict(props){
+  if(props.celsius >= 100){
+    return <p>물이 끓습니다</p>
+  }
+  return <p>물이 끓지 않습니다</p>
+}
+  function toCelsius(fahrenheit) {
+    return ((fahrenheit - 32) * 5)/9;
+  }
+
+  function toFarenheit(celsius) {
+    return (celsius * 9) / 5 + 32;
+  }
+
+  function tryConert(temperature, convert) {
+    const input = parseFloat(temperature);
+    if(Number.isNaN(input)){
+      return "";
+    }
+    const outout = convert(input);
+    const rounded = Math.round(outout * 1000) / 1000;
+    return rounded.toString();
+  }
+
+  function Calculator(props) {
+    const[temperature, setTemperature] = useState("");
+    const[scale, setScale] = useState("c");
+
+    const handleCelsiusChange = (temperature) => {
+      setTemperature(temperature);
+      setScale("c");
+    };
+
+    const handleFahreheitChage = (temperature) => {
+      setTemperature(temperature);
+      setScale("f");
+    };
+
+    const celsius = 
+      scale === "f" ? tryConert(temperature, toCelsius) : temperature;
+    const fahrenheit = 
+      scale === "c" ? tryConert(temperature, toFarenheit) : temperature;
+    
+    return (
+      <div>
+        <TemperatureInput
+          scale="c"
+          temperature={celsius}
+          onTemperaturechange={handleCelsiusChange}
+          />
+          <TemperatureInput 
+          scale="f"
+          temperature={fahrenheit}
+          onTemperaturechange={handleFahreheitChage}
+          />
+          <BoilingVerdict celsius = {parseFloat(celsius)}/>
+      </div>
+    )
+
+  }
+
+export default Calculator;
+```
+
+위에는 Calculator 전체 컴포넌트 입니다. 
+
+```jsx
+ function toCelsius(fahrenheit) {
+    return ((fahrenheit - 32) * 5)/9;
+  }
+
+  function toFarenheit(celsius) {
+    return (celsius * 9) / 5 + 32;
+  }
+```
+
+위에 함수는 화씨온도를 섭씨온도로 변환하는 함수와 섭씨온도를 화씨온도를 변환하는 함수를 정의한 것입니다.
+
+이렇게 만든 함수를 아래와 같이 호출할 수 있습니다
+
+```jsx
+ function tryConert(temperature, convert) {
+    const input = parseFloat(temperature);
+    if(Number.isNaN(input)){
+      return "";
+    }
+    const outout = convert(input);
+    const rounded = Math.round(outout * 1000) / 1000;
+    return rounded.toString();
+  }
+
+```
+
+tryConert() 함수는 온도 값과 변환하는 함수를 파라미터로 받아서 값을 변환시켜 리턴해 주는 함수입니다.
+
+만약 숫자가 아닌 값을 입력하면 empty string을 리턴하도록 예외 처리를 했습니다.
+
+이 함수를 실제로 사용하는 방법은 아래와 같습니다.
+
+```jsx
+tryConert('abc', toCelsius) // empty string을 리턴
+tryConert('10.22', toFahreheit) // '50.369'을 리턴
+```
+---
+정리하면 우선 state로 temperature와 scale을 선언하여 온도 값과 단위를 각각 저장하도록 하고, 이 온도와 단위를 이용하여 변환 함수를 통해 섭씨온도와 화씨온도를 구해서 사용합니다.
+
+TemperatureInput 컴포넌트를 사용하는 부분에서는 각 단위로 변환된 온도 값과 단위를 props로 넣어 주었고, 값이 변경되었을 때 업데이트하기 위한 함수를  onTemperaturechange에 넣어 주었습니다.
+
+따라서 섭씨온도가 변경되면 단위가 ‘c’로 변경되고, 화씨온도가 변경되면 단위가 ‘f’로 변경됩니다.
+***
 ## 10주차 정리(23.05.04)
 ### 리스트와 키란 무엇인가
 
