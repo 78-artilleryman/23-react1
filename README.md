@@ -1,4 +1,283 @@
 # 윤병현 23 - React
+## 12주차 정리 (23.05.18)
+## 합성
+
+합성은 여러 개의 컴포넌트를 합쳐서 새로운 컴포넌트를 만드는 것입니다.
+
+조합 방법에 따라 합성의 사용 기법은 다음과 같이 나눌 수 있습니다
+
+1. Contaiment(담다, 포함하다, 격리하다)
+- 특정 컴포넌트가 하위 컴포넌트를 포함하는 형태의 합성 방법이다
+- 컴포넌트에 따라서는 어떤 자식 엘리먼트가 들어올 지 미리 예상할 수 없는 경우가 있습니다
+- 범용적인 ‘박스’ 역할을 하는 Sidebar 혹은 Dialog와 같은 컴포넌트에서 특히 자주 볼 수 있습니다
+- 이런 컴포넌트에서는 children props를 사용하여 자식 엘리먼트를 출력에 그대로 전달하는 것이 좋습니다.
+- 이때  children props은 컴포넌트의 props에 기본적으로 들어있는 children 속성을 사용합니다.
+
+- 다음과 같이 props.childre을 사용하면 해당 컴포넌트의 하위 컴포넌트가 모두 children으로 들어오게 됩니다
+
+```jsx
+function FancyBorder(props){
+	return(
+		<div className={'FancyBorder FancyBorder -' + props.color}>
+			{props.children}
+		</div>
+);
+}
+```
+
+FancyBorder 컴포넌트를 사용하는 예제입니다
+
+```jsx
+function WelcomeDialog(props){
+  return (
+   <FancyBorder color="blue">
+    <h1 className="Dialog-title">
+     어서오세요
+	  </h1>
+    <p className="Dialog-message">
+     우리 사이트에 방문하신 것을 환영합니다
+    </p>
+  </FancyBorder>
+ );
+}
+```
+
+WelconDialog 컴포넌트는 FancyBorder 컴포넌트를 사용하고 , FancyBorder 컴포넌트는 h1과 p 두개의 태그를 children이 props로 전달됩니다.
+
+
+- 리엑트에서는 props.children을 통해 하위 컴포넌트를 하나로 모아서 제공해 줍니다
+- 만일 여러 개의 children 집합이 필요할 경우는 별도로 props를 정의해서 각각 원하는 컴포넌트를 넣어줍니다.
+- 예와 같이 SplitPane은 화면을 왼쪽과 오른쪽으로 분할해 주고, App에서는 SplitPane을 사용해서 left, right 두 개의 props를 정의하고 있습니다
+- 즉, App에서 left, right를 props를 받나 화면을 분할하게 됩니다. 이처럼 여러 개의 children 집합이 필요한 경우 별도의 props를 정의해서 사용합니다.
+
+```jsx
+function SplitPane(props) {
+    return(
+        <div className="SplitPane">
+            <div className="SplitPane-left">
+                {props.left}
+            </div>
+            <div className="SplitPane-right">
+                {props.right}
+            </div>
+        </div>
+    )
+}
+
+function App(props){
+    return(
+        <SplitPane
+        left={
+            <Contacts/>
+        }
+        right={
+            <Chat/>
+        }
+        />
+    )
+}
+```
+---
+1. Specialization (특수화, 전문화)
+- 웰컴다이얼로그는 아이얼로그의 특별한 케이스입니다.
+- 범용적인 개념을 구별이 되게 구체화하는 것을 특수화라고 합니다
+- 객체지향 언어에서는 상속을 사용하여 특수화를 구현합니다
+- 리액트에서는 합성을 사용하여 특수화를 구현합니다
+
+```jsx
+function Dialog(props){
+    return (
+     <FancyBorder color="blue">
+      <h1 className="Dialog-title">
+        {props.title}
+      </h1>
+      <p className="Dialog-message">
+       {props.message}
+      </p>
+    </FancyBorder>
+   );
+  }
+
+  function WelcomeDialog(props){
+    return(
+        <Dialog
+            title="어서 오세요"
+            message="우리 사이트에 방문하신 것을 환영합니다"
+        />
+    )
+  }
+```
+
+1. Containment와 Specialization을 같이 사용하기
+- Containment를 위해서 props.children을 사용하고, Specialization을 위해 직접 정의한 props를 사용하면 된다.
+
+```jsx
+function Dialog(props){
+    return (
+     <FancyBorder color="blue">
+      <h1 className="Dialog-title">
+        {props.title}
+      </h1>
+      <p className="Dialog-message">
+       {props.message}
+      </p>
+      {props.children}
+    </FancyBorder>
+   );
+  }
+
+  function SignUpDialog(props){
+    const [nickname, setNickName] = useState("");
+
+    const handleChange = (event) => {
+        setNickName(event.target.value);
+    }
+
+    const handleSignUp = () =>{
+        alert(`어서 오세요, ${nickname}님!`);
+    }
+
+    return(
+        <Dialog
+            title="화성 탐사 프로그램"
+            message="닉네임을 입력해 주세요">
+
+        <input
+            value={nickname}
+            onChange={handleChange}/>
+        <button onClick={handleSignUp}>가입하기</button>
+         </Dialog>
+    )
+  }
+```
+---
+## 상속
+
+- 합성과 대비되는 개념으로 상속이 있습니다
+- 자식 클래스는 부모 클래스가 가진 변수나 함수 등의 속성을 모두 갖게 되는 개념입니다
+- 하지만 리액트에서는 상속보다는 합성을 통해 새로운 컴포넌트를 생성합니다
+
+---
+
+## 컨텍스트
+
+- 기존의 일반적인 리액트에서는 데이터가 컴포넌츠의 props을 통새 부모에서 자식으로 단방향으로 전달되었습니다.
+- 컨텍스트 리액트 컴포넌트 사이에서 데이터를 기존ㄴ의 prop르 통해 전달하는 방식 대신 컴포넌트 트리를 통해 곧바로 컴포넌트에 전달하는 새로운 박식을 제공합니다
+- 이 것을 통해 어떤 컴포넌트라고 쉽게 데이터에 접근할 수 있습니다
+- 컨텍스트를 사용하면 일일이 props로 전달할 필요 없이 그림처럼 데이터를 필요로 하는 컴포넌트에 곧바로 데이터를 전달할 수 있습니다
+
+## 컨텍스트 사용 예시
+
+- 여러 컴포넌트에서 자주 필요로 하는 데이터는 로그인 여부, 로그인 정보, UI 테마, 현재 선택된 언어 등이 있습니다
+- 이런 데이터들을 기존의 방식대로 컴포넌트의 props를 통해 넘겨주는 예를 보여주고 있습니다
+
+```jsx
+function App(props){
+    return <Toolbar Theme="dark"/>
+}
+
+function Toolbar(props){
+    return(
+        <div>
+            <ThemedButton theme={props.theme}/>
+        </div>
+    )
+}
+
+function ThemedButton(props){
+    return<Button theme={props.theme}/>
+}
+```
+
+반복적인 코드를 계속해서 작성해 주면 비효율적이고 가독성이 떨어져 아래와 같이 컨텍스트를 사용하면 깔금하게 개선할 수 있습니다
+
+```jsx
+const ThemeContext = React.createContext('light');
+
+function App(props){
+    return (
+        <ThemeContext.Provider value="dark">
+            <Toolbar></Toolbar>
+        </ThemeContext.Provider>
+    )
+}
+
+function Toolbar(props){
+    return(
+        <div>
+            <ThemedButton/>
+        </div>
+    )
+}
+
+function ThemedButton(props){
+   return(
+    <ThemeContext.Consumer>
+        {value=><Button theme={value}/>}
+    </ThemeContext.Consumer>
+   )
+}
+```
+
+1. React.createContext() 함수를 사용해서 ThemeContext라는 이름의 컨텍스트를 생성합니다
+2. 컨텍스트를 사용하려면 컴포넌트의 상위 컴포넌트에서 provider로 감싸주어야 합니다.
+
+## 고려할 점
+
+- 컨텍스트는 다른 레벨의 많은 컴포넌트가 특정 데이터를 필요로 하는 경우에 주로 사용함
+- 컴포넌트와 컨텍스트가 연동되면 재사용성이 떨어져 무조건 사용하는 것은 좋은게 아니다
+- 다른 레벨의 많은 컴포너느가 에디터를 필요로 하는 경우가 아니면 props를 통해 데이터를 전달하는 컴포넌트 합성 방법이 더 적합하다
+
+## 컨텍스트 API
+
+1. React.createContext
+- 컨텍스트를 생성하기 위한 함수입니다
+- 파라메타에는 기본값을 넣어주면 됩니다
+- 하위 컴포넌트는 가장 가까운 상위 레벨의 Provider로 부터 컨텍스트를 받게 되지만, 만일 Provider를 찾을 수 없다면 위에서 설정한 기본값은 사용하게 됩니다
+
+```jsx
+const MyContext = React.createContext(기본값);
+```
+
+2. Context.Provider
+- Context.Provider 컴포넌트로 하위 컴포넌트들을 감싸주면 모든 하위 컴포넌트들이 해당 컨텍스트의 데이터에 접근할 수 있게 됩니다.
+
+```jsx
+<MyContext.Provider value={/*some value*/}>
+```
+
+- Provider  컴포넌트에는 value라는 prop이 있고, 이것은 Provider 컴포넌트 하위에 있는 컴포넌트에게 전달됩니다
+- 하위 컴포넌트를 consumer 컴포넌트라고 부릅니다
+
+3. Class.contextType
+- Provider 하위에 있는 클래스 컴포넌트에서 컨텍스트의 에디터에 접근하기 위해 사용합니다.
+- Class컴포넌트는 더 이상 사용하지 않으므로 참고만 합니다
+
+4. Context.Consumer
+- 함수형 컴포넌트에서 Context.Consumer를 사용하여 컨텍스트를 구독할 수 있습니다.
+
+```jsx
+<MyContext.Consumer>
+    {value => /* 컨텍스트의 값에 따라서 컴포넌트들을 렌더링 */}
+</MyContext.Consumer>
+```
+
+- 컴포넌트의 자식으로 함구가 올 수 있는데 이것을 function as a child라고 부릅니다
+- Context.Consumer로 감싸주면 자식으로 들어간 함수가 현재 컨텍스트의 value를 받아서 리액트 노드로 리턴합니다
+- 함수로 전달되는 value는 Provider의 value prop과 동일합니다
+
+5. Context.displayName
+- 컨텍스트 객체는 displayName이라는 문자열 속성을 갖습니다
+- 크롬의 리액트 개발자 도구에서는 컨텍스트의 Provider나 Consumer를 표시할 때 displayName을 함께 표시해 줍니다
+
+```jsx
+const MyContext = React.createContext(/* some value */)
+MyContext.displayName = "MyDisplayName";
+
+<MyContext.Provider>
+
+</MyContext.Provider>
+```
 ## 11주차 정리 (23.05.11)
 ## shared state
 
